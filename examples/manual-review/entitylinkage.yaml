@@ -1,0 +1,26 @@
+version: 1
+
+entities:
+  - id: product-020
+    name: Fictional Meridian Catalog
+    aliases:
+      - Fictional Meridian Journal
+
+records:
+  - id: source-record-020
+    name: Fictional Unindexed Supplement
+
+matching:
+  normalization:
+    case_fold: true
+    punctuation: preserve
+  candidate_rules:
+    - id: publication-name
+      type: normalized_name
+  apply_overrides: true
+
+overrides:
+  - record_id: source-record-020
+    status: resolved
+    entity_id: product-020
+    reason: reviewed_identity_match
