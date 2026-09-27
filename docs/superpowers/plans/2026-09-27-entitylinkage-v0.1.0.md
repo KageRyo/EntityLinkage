@@ -66,11 +66,11 @@ Use frozen dataclasses and copy incoming mappings into read-only mappings. Defin
 
 **Interfaces:** Export `__version__ = "0.1.0"` from `entitylinkage`. Configure Python `>=3.11`, PyYAML as the only runtime dependency, and `pytest`/`ruff` as development dependencies. Do not add the console entry point until Task 6 creates `cli.py`.
 
-- [ ] **Step 1: Add the minimal Hatchling `pyproject.toml` with package metadata, Python floor, runtime/dev dependencies, and tool settings; add the empty package initializer and ignore entries; run `uv lock` and `uv sync --locked`.**
-- [ ] **Step 2: Write the package metadata test** in `tests/unit/test_package.py`; assert `entitylinkage.__version__ == "0.1.0"` and `importlib.metadata.version("entitylinkage") == "0.1.0"` in the synced project environment.
-- [ ] **Step 3: Run `uv run --locked pytest tests/unit/test_package.py -q`; it must fail because the empty initializer has no `__version__`.**
-- [ ] **Step 4: Add `__version__ = "0.1.0"` and rerun `uv run --locked pytest tests/unit/test_package.py -q`; both version assertions must pass.**
-- [ ] **Step 5: Run `uv run --locked ruff check .` and commit as `build: scaffold EntityLinkage package`.**
+- [x] **Step 1: Add the minimal Hatchling `pyproject.toml` with package metadata, Python floor, runtime/dev dependencies, and tool settings; add the empty package initializer and ignore entries; run `uv lock` and `uv sync --locked`.**
+- [x] **Step 2: Write the package metadata test** in `tests/unit/test_package.py`; assert `entitylinkage.__version__ == "0.1.0"` and `importlib.metadata.version("entitylinkage") == "0.1.0"` in the synced project environment.
+- [x] **Step 3: Run `uv run --locked pytest tests/unit/test_package.py -q`; it must fail because the empty initializer has no `__version__`.**
+- [x] **Step 4: Add `__version__ = "0.1.0"` and rerun `uv run --locked pytest tests/unit/test_package.py -q`; both version assertions must pass.**
+- [x] **Step 5: Run `uv run --locked ruff check .` and commit as `build: scaffold EntityLinkage package`.**
 
 ### Task 2: Add immutable models and deterministic normalization
 
