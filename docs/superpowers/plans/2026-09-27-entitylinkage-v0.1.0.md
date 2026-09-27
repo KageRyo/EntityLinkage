@@ -141,12 +141,12 @@ Use frozen dataclasses and copy incoming mappings into read-only mappings. Defin
 
 **Interfaces:** The basic example has four records with exact outcomes: alias plus year resolves to `product-001`; alias without year remains ambiguous between `product-001` and `product-002`; unknown title is unresolved; an out-of-scope record is not applicable. The ambiguous example isolates a shared-alias ambiguity. The manual-review example resolves an otherwise metadata-poor record only through an enabled explicit override.
 
-- [ ] **Step 1: Write example contract tests** loading all three directories and asserting the basic status sequence/counts, sorted ambiguous candidates, and manual override reason; assert all example names, aliases, and IDs are fictional publication/catalog values.
-- [ ] **Step 2: Run `uv run --locked pytest tests/unit/test_examples.py -q`; the tests must fail until the example files exist.**
-- [ ] **Step 3: Add the three synthetic YAML configs and run `validate`, `link`, `audit`, and `inspect` against them; confirm outputs match the example contract tests.**
-- [ ] **Step 4: Refresh the public TWDisaster data-model/crosswalk inspection read-only and document why it does not provide independent source-specific identity evidence; include source links, the inspection date, and no copied rows or private implementation details.**
-- [ ] **Step 5: Write README sections for purpose, conservative statuses, installation, quick start, entities, records, aliases, rules, missing values, manual overrides, the `Linker` Python API, deterministic outputs, inspection, limitations, EvidenceMatrix/LineageGuard boundaries, and the approved origin statement: “EntityLinkage was extracted from conservative identity-matching patterns developed for a real-world multi-source data pipeline.”**
-- [ ] **Step 6: Run `uv run --locked pytest tests/unit/test_examples.py -q`, all four CLI commands for each applicable example, and `uv run --locked ruff check .`; commit as `docs: add synthetic examples and usage guide`.**
+- [x] **Step 1: Write example contract tests** loading all three directories and asserting the basic status sequence/counts, sorted ambiguous candidates, and manual override reason; assert all example names, aliases, and IDs are fictional publication/catalog values.
+- [x] **Step 2: Run `uv run --locked pytest tests/unit/test_examples.py -q`; the tests must fail until the example files exist.**
+- [x] **Step 3: Add the three synthetic YAML configs and run `validate`, `link`, `audit`, and `inspect` against them; confirm outputs match the example contract tests.**
+- [x] **Step 4: Refresh the public TWDisaster data-model/crosswalk inspection read-only and document why it does not provide independent source-specific identity evidence; include source links, the inspection date, and no copied rows or private implementation details.**
+- [x] **Step 5: Write README sections for purpose, conservative statuses, installation, quick start, entities, records, aliases, rules, missing values, manual overrides, the `Linker` Python API, deterministic outputs, inspection, limitations, EvidenceMatrix/LineageGuard boundaries, and the approved origin statement: “EntityLinkage was extracted from conservative identity-matching patterns developed for a real-world multi-source data pipeline.”**
+- [x] **Step 6: Run `uv run --locked pytest tests/unit/test_examples.py -q`, all four CLI commands for each applicable example, and `uv run --locked ruff check .`; commit as `docs: add synthetic examples and usage guide`.**
 
 ### Task 8: Add CI and verify the distributable artifact
 

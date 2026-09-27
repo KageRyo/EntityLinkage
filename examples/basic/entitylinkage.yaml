@@ -1,0 +1,46 @@
+version: 1
+
+entities:
+  - id: product-001
+    name: Fictional Northstar Journal
+    aliases:
+      - Fictional Northstar Almanac
+    attributes:
+      year: 2024
+      catalog_code: FIC-001
+  - id: product-002
+    name: Fictional Northstar Review
+    aliases:
+      - Fictional Northstar Almanac
+    attributes:
+      year: 2025
+      catalog_code: FIC-002
+
+records:
+  - id: source-record-001
+    name: Fictional Northstar Almanac
+    attributes:
+      year: 2024
+  - id: source-record-002
+    name: Fictional Northstar Almanac
+  - id: source-record-003
+    name: Fictional Unlisted Bulletin
+  - id: source-record-004
+    name: Fictional External Circular
+    applicable: false
+    not_applicable_reason: outside_catalog_scope
+
+matching:
+  normalization:
+    case_fold: true
+    punctuation: preserve
+  candidate_rules:
+    - id: publication-name
+      type: normalized_name
+  constraints:
+    - id: same-publication-year
+      type: equal
+      entity_field: attributes.year
+      record_field: attributes.year
+      missing: ignore
+  apply_overrides: false

@@ -1,0 +1,24 @@
+version: 1
+
+entities:
+  - id: product-010
+    name: Fictional Larkspur Quarterly
+    aliases:
+      - Fictional Shared Almanac
+  - id: product-011
+    name: Fictional Larkspur Register
+    aliases:
+      - Fictional Shared Almanac
+
+records:
+  - id: source-record-010
+    name: Fictional Shared Almanac
+
+matching:
+  normalization:
+    case_fold: true
+    punctuation: preserve
+  candidate_rules:
+    - id: publication-name
+      type: normalized_name
+  apply_overrides: false
