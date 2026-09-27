@@ -52,6 +52,7 @@ def test_resolved_override_takes_precedence_and_preserves_review_reason(tmp_path
     assert result.status == "resolved"
     assert result.entity_id == "entity-1"
     assert result.reason_codes == ("reviewed_identity_match",)
+    assert result.normalized_record_name == "unknown"
     assert len(result.evidence) == 1
     assert result.evidence[0].phase == "override"
     assert result.evidence[0].outcome == "resolved"

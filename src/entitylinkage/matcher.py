@@ -1,4 +1,5 @@
 from collections.abc import Sequence
+from dataclasses import replace
 
 from entitylinkage.errors import ConfigError
 from entitylinkage.model import (
@@ -39,6 +40,11 @@ class Linker:
                 evidence=(),
             )
 
+        normalized_record_name = (
+            normalize_text(record.name, self.config.normalization)
+            if record.name is not None
+            else None
+        )
         if self.config.apply_overrides:
             override_result = apply_override(
                 record,
@@ -46,13 +52,7 @@ class Linker:
                 {override.record_id: override for override in self.config.overrides},
             )
             if override_result is not None:
-                return override_result
-
-        normalized_record_name = (
-            normalize_text(record.name, self.config.normalization)
-            if record.name is not None
-            else None
-        )
+                return replace(override_result, normalized_record_name=normalized_record_name)
         generated: set[str] = set()
         evidence: list[Evidence] = []
         usable_identity_input = False
