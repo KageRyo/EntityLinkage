@@ -87,6 +87,17 @@ class LinkageConfig:
 
 
 @dataclass(frozen=True, slots=True)
+class LinkageInput:
+    entities: tuple[Entity, ...]
+    records: tuple[Record, ...]
+    config: LinkageConfig
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "entities", tuple(self.entities))
+        object.__setattr__(self, "records", tuple(self.records))
+
+
+@dataclass(frozen=True, slots=True)
 class Evidence:
     rule_id: str
     phase: EvidencePhase

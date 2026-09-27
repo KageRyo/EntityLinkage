@@ -10,6 +10,7 @@ from entitylinkage.model import (
     Scalar,
 )
 from entitylinkage.normalize import normalize_text
+from entitylinkage.overrides import apply_override
 
 
 class Linker:
@@ -37,6 +38,15 @@ class Linker:
                 normalized_record_name=None,
                 evidence=(),
             )
+
+        if self.config.apply_overrides:
+            override_result = apply_override(
+                record,
+                {entity.id: entity for entity in entities},
+                {override.record_id: override for override in self.config.overrides},
+            )
+            if override_result is not None:
+                return override_result
 
         normalized_record_name = (
             normalize_text(record.name, self.config.normalization)
