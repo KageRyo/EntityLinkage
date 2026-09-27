@@ -129,11 +129,11 @@ Use frozen dataclasses and copy incoming mappings into read-only mappings. Defin
 
 **Interfaces:** Implement `main(argv: Sequence[str] | None = None) -> int` with `validate PATH`, `link PATH [--output DIR]`, `audit PATH`, and `inspect RECORD_ID PATH`. `link` defaults to `./entitylinkage-output`; `audit` returns 1 for ambiguous/unresolved results; malformed input and execution errors return 2; all other successful commands return 0. Print reports to stdout and errors to stderr.
 
-- [ ] **Step 1: Write CLI tests** invoking `main([...])` and asserting validate success; link creates `linkage.json`, `linkage.csv`, and `summary.json`; audit returns 1 for unresolved/ambiguous and 0 when only resolved/not-applicable records exist; inspect prints the record, normalized name, rule evidence, and final result; unknown record ID returns 2; malformed config returns 2 and writes the diagnostic to stderr.
-- [ ] **Step 2: Run `uv run --locked pytest tests/cli/test_cli.py -q`; tests must fail before command parsing and dispatch exist.**
-- [ ] **Step 3: Implement argparse commands, config loading, stable JSON stdout, output-directory handling, and exit/error mapping in `cli.py`; add the console entry point.**
-- [ ] **Step 4: Run `uv run --locked pytest tests/cli/test_cli.py -q` and `uv run --locked entitylinkage --help`; all command/exit-code assertions must pass and help must list the four commands.**
-- [ ] **Step 5: Run `uv run --locked ruff check src/entitylinkage tests/cli` and commit as `feat: add EntityLinkage CLI`.**
+- [x] **Step 1: Write CLI tests** invoking `main([...])` and asserting validate success; link creates `linkage.json`, `linkage.csv`, and `summary.json`; audit returns 1 for unresolved/ambiguous and 0 when only resolved/not-applicable records exist; inspect prints the record, normalized name, rule evidence, and final result; unknown record ID returns 2; malformed config returns 2 and writes the diagnostic to stderr.
+- [x] **Step 2: Run `uv run --locked pytest tests/cli/test_cli.py -q`; tests must fail before command parsing and dispatch exist.**
+- [x] **Step 3: Implement argparse commands, config loading, stable JSON stdout, output-directory handling, and exit/error mapping in `cli.py`; add the console entry point.**
+- [x] **Step 4: Run `uv run --locked pytest tests/cli/test_cli.py -q` and `uv run --locked entitylinkage --help`; all command/exit-code assertions must pass and help must list the four commands.**
+- [x] **Step 5: Run `uv run --locked ruff check src/entitylinkage tests/cli` and commit as `feat: add EntityLinkage CLI`.**
 
 ### Task 7: Add synthetic examples and complete user documentation
 
