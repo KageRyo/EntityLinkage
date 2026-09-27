@@ -86,14 +86,14 @@ Use frozen dataclasses and copy incoming mappings into read-only mappings. Defin
 
 ### Task 3: Implement conservative matching and evidence
 
-**Files:** Create `src/entitylinkage/matcher.py` and `tests/unit/test_matcher.py`.
+**Files:** Create `src/entitylinkage/matcher.py` and `tests/unit/test_matcher.py`; update `src/entitylinkage/__init__.py` to export `Linker`.
 
 **Interfaces:** Implement `Linker(config: LinkageConfig).link(entities, records) -> tuple[LinkageResult, ...]`. Candidate rules are OR-combined; `normalized_name` matches an entity name or declared alias, while `exact_value` uses type-sensitive equality on configured fields. Apply each `EqualConstraint` to every generated candidate using its `ignore` or `reject` missing behavior. Sort candidates, evidence, and reason codes by stable IDs.
 
 - [ ] **Step 1: Write tests** asserting an alias plus matching `year` resolves to the sole entity with candidate and constraint evidence; exact `publisher_id` identity values can generate candidates; two valid candidates yield `ambiguous`, `entity_id is None`, sorted candidate IDs, and `multiple_valid_candidates`; no candidates yield `unresolved`; adding a second valid entity changes `resolved` to `ambiguous`; OR rules supporting different entities retain both candidates; empty identity values never generate candidates; missing `ignore` leaves a candidate while missing `reject` removes it; conflicting attributes yield `attribute_conflict`; results sort by record ID independent of input order; `from entitylinkage import Linker` works.
 - [ ] **Step 2: Add the Review Focus tests** `test_equal_constraint_is_type_sensitive`, `test_empty_constraint_value_is_present`, `test_all_identity_inputs_missing_is_insufficient_metadata`, and `test_usable_unmatched_identity_is_no_identity_candidate`; assert `False` does not equal `0`, `""` is present, and the two unresolved inputs receive their distinct reason codes.
 - [ ] **Step 3: Run `uv run --locked pytest tests/unit/test_matcher.py -q`; the tests must fail before matching is implemented.**
-- [ ] **Step 4: Implement candidate collection, constraint filtering, status classification, stable reason codes, normalized-name capture, and rule evidence in `matcher.py`.**
+- [ ] **Step 4: Implement candidate collection, constraint filtering, status classification, stable reason codes, normalized-name capture, and rule evidence in `matcher.py`; export `Linker` from `entitylinkage.__init__`.**
 - [ ] **Step 5: Run `uv run --locked pytest tests/unit/test_matcher.py -q` and `uv run --locked ruff check src/entitylinkage/matcher.py tests/unit/test_matcher.py`; all assertions must pass.**
 - [ ] **Step 6: Commit as `feat: add conservative entity matching`.**
 
