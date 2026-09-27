@@ -154,11 +154,11 @@ Use frozen dataclasses and copy incoming mappings into read-only mappings. Defin
 
 **Interfaces:** Run CI on Python 3.11, 3.12, and 3.13 using `uv`; use [actions/checkout v7](https://github.com/actions/checkout/releases), [actions/setup-python v7](https://github.com/actions/setup-python/releases), and [astral-sh/setup-uv v10.1.0](https://github.com/astral-sh/setup-uv) pinned to `bec219d24cd3e171d82865faccec33120bb574f4`, rechecking the official action references before implementation. CI must cover Ruff lint/format checks, pytest, wheel build, installation of the built wheel in a fresh virtual environment, installed CLI smoke commands, and repeated-output byte comparisons.
 
-- [ ] **Step 1: Write the workflow** with checkout, Python/uv setup, locked dependency sync, Ruff, pytest, `uv build`, and a fresh-environment wheel install; invoke installed `entitylinkage validate examples/basic`, `link`, `audit`, and `inspect`.
-- [ ] **Step 2: Run `uv run --locked ruff check .`, `uv run --locked ruff format --check .`, `uv run --locked pytest`, and `uv build`; all must pass and produce a wheel.**
-- [ ] **Step 3: Create a clean Python 3.11 environment, install only `dist/*.whl`, then run the installed console command against `examples/basic`; it must produce the expected counts without importing from the checkout.**
-- [ ] **Step 4: Run the same `link` command twice into separate directories and use `cmp` on `linkage.json`, `linkage.csv`, and `summary.json`; every pair must be byte-identical.**
-- [ ] **Step 5: Review the wheel contents and runtime dependency metadata; confirm there is no TAG-Twin runtime dependency or private data, then commit as `ci: verify EntityLinkage package and CLI`.**
+- [x] **Step 1: Write the workflow** with checkout, Python/uv setup, locked dependency sync, Ruff, pytest, `uv build`, and a fresh-environment wheel install; invoke installed `entitylinkage validate examples/basic`, `link`, `audit`, and `inspect`.
+- [x] **Step 2: Run `uv run --locked ruff check .`, `uv run --locked ruff format --check .`, `uv run --locked pytest`, and `uv build`; all must pass and produce a wheel.**
+- [x] **Step 3: Create a clean Python 3.11 environment, install only `dist/*.whl`, then run the installed console command against `examples/basic`; it must produce the expected counts without importing from the checkout.**
+- [x] **Step 4: Run the same `link` command twice into separate directories and use `cmp` on `linkage.json`, `linkage.csv`, and `summary.json`; every pair must be byte-identical.**
+- [x] **Step 5: Review the wheel contents and runtime dependency metadata; confirm there is no TAG-Twin runtime dependency or private data, then commit as `ci: verify EntityLinkage package and CLI`.**
 
 ## Plan Self-Review
 

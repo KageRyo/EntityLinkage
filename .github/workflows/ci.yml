@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+
+      - name: Install locked development dependencies
+        run: uv sync --locked --all-groups
+
+      - name: Lint, format, and test
+        run: |
+          uv run --locked ruff check .
+          uv run --locked ruff format --check .
+          uv run --locked pytest
+
+      - name: Build wheel and source distribution
+        run: uv build
+
+      - name: Install wheel into a clean environment and smoke-test CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          wheel="$(find dist -maxdepth 1 -type f -name '*.whl' -print -quit)"
+          test -n "$wheel"
+          venv="$RUNNER_TEMP/entitylinkage-wheel"
+          uv venv --python "${{ matrix.python-version }}" "$venv"
+          uv pip install --python "$venv/bin/python" "$GITHUB_WORKSPACE/$wheel"
+          cd "$RUNNER_TEMP"
+          app="$venv/bin/entitylinkage"
+          "$venv/bin/python" -c 'import entitylinkage, pathlib; location = pathlib.Path(entitylinkage.__file__).resolve(); assert "site-packages" in location.parts, location'
+          "$app" validate "$GITHUB_WORKSPACE/examples/basic"
+          "$app" inspect source-record-001 "$GITHUB_WORKSPACE/examples/basic"
+
+          first="$RUNNER_TEMP/linkage-first"
+          second="$RUNNER_TEMP/linkage-second"
+          "$app" link "$GITHUB_WORKSPACE/examples/basic" --output "$first"
+          "$app" link "$GITHUB_WORKSPACE/examples/basic" --output "$second"
+          "$venv/bin/python" -c 'import json, pathlib, sys; summary = json.loads(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8")); assert summary["status_counts"] == {"ambiguous": 1, "not_applicable": 1, "resolved": 1, "unresolved": 1}, summary' "$first/summary.json"
+          set +e
+          "$app" audit "$GITHUB_WORKSPACE/examples/basic"
+          audit_status=$?
+          set -e
+          test "$audit_status" -eq 1
+          cmp "$first/linkage.json" "$second/linkage.json"
+          cmp "$first/linkage.csv" "$second/linkage.csv"
+          cmp "$first/summary.json" "$second/summary.json"
