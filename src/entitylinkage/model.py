@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from types import MappingProxyType
-from typing import Literal, Mapping, TypeAlias
+from typing import Literal, Mapping, TypeAlias, TypeVar
 
 Scalar: TypeAlias = str | int | float | bool | None
 LinkageStatus: TypeAlias = Literal["resolved", "ambiguous", "unresolved", "not_applicable"]
@@ -11,9 +11,10 @@ MissingBehavior: TypeAlias = Literal["ignore", "reject"]
 OverrideStatus: TypeAlias = Literal["resolved", "not_applicable"]
 EvidencePhase: TypeAlias = Literal["candidate", "constraint", "override"]
 EvidenceValue: TypeAlias = Scalar | tuple[Scalar, ...]
+_Value = TypeVar("_Value")
 
 
-def _readonly_mapping(values: Mapping[str, object]) -> Mapping[str, object]:
+def _readonly_mapping(values: Mapping[str, _Value]) -> Mapping[str, _Value]:
     return MappingProxyType(dict(values))
 
 
