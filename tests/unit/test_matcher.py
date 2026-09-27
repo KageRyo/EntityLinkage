@@ -1,4 +1,7 @@
+import pytest
+
 from entitylinkage import Linker
+from entitylinkage.errors import ConfigError
 from entitylinkage.model import (
     CandidateRule,
     Entity,
@@ -112,6 +115,41 @@ def test_adding_a_second_valid_candidate_changes_resolved_to_ambiguous() -> None
     assert resolved.status == "resolved"
     assert ambiguous.status == "ambiguous"
     assert ambiguous.entity_id is None
+
+
+@pytest.mark.parametrize(
+    "entities",
+    [
+        (
+            Entity(id="same", name="Wrong", attributes={"year": 2024}),
+            Entity(id="same", name="Target", attributes={"year": 2025}),
+        ),
+        (
+            Entity(id="same", name="Target", attributes={"year": 2025}),
+            Entity(id="same", name="Wrong", attributes={"year": 2024}),
+        ),
+    ],
+    ids=["conflicting-entity-order", "reversed-conflicting-entity-order"],
+)
+def test_duplicate_entity_ids_are_rejected_before_matching(entities: tuple[Entity, ...]) -> None:
+    year = EqualConstraint(
+        id="same-year",
+        entity_field="attributes.year",
+        record_field="attributes.year",
+        missing="reject",
+    )
+    record = Record(id="record-1", name="Target", attributes={"year": 2024})
+
+    with pytest.raises(ConfigError, match="duplicate entity ID"):
+        Linker(_name_config(constraints=(year,))).link(entities, (record,))
+
+
+def test_duplicate_record_ids_are_rejected_before_matching() -> None:
+    entity = Entity(id="entity-1", name="Shared")
+    record = Record(id="record-1", name="Shared")
+
+    with pytest.raises(ConfigError, match="duplicate record ID"):
+        Linker(_name_config()).link((entity,), (record, record))
 
 
 def test_candidate_rules_union_support_from_distinct_identity_fields() -> None:

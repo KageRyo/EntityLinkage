@@ -23,6 +23,8 @@ class Linker:
     def link(
         self, entities: Sequence[Entity], records: Sequence[Record]
     ) -> tuple[LinkageResult, ...]:
+        _require_unique_ids(entities, "entity")
+        _require_unique_ids(records, "record")
         ordered_entities = tuple(sorted(entities, key=lambda item: item.id))
         results = (self._link_record(ordered_entities, record) for record in records)
         return tuple(sorted(results, key=lambda item: item.record_id))
@@ -237,3 +239,11 @@ def _field_value(entity_or_record: Entity | Record, reference: str) -> Scalar:
 
 def _type_sensitive_equal(left: Scalar, right: Scalar) -> bool:
     return type(left) is type(right) and left == right
+
+
+def _require_unique_ids(items: Sequence[Entity] | Sequence[Record], kind: str) -> None:
+    seen: set[str] = set()
+    for item in items:
+        if item.id in seen:
+            raise ConfigError(f"duplicate {kind} ID: {item.id!r}")
+        seen.add(item.id)
