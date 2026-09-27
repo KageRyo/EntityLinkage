@@ -4,3 +4,5 @@
 .ruff_cache/
 dist/
 build/
+__pycache__/
+*.py[cod]

@@ -74,15 +74,15 @@ Use frozen dataclasses and copy incoming mappings into read-only mappings. Defin
 
 ### Task 2: Add immutable models and deterministic normalization
 
-**Files:** Create `src/entitylinkage/model.py`, `src/entitylinkage/errors.py`, `src/entitylinkage/normalize.py`, and `tests/unit/test_model.py`, `tests/unit/test_normalize.py`.
+**Files:** Create `src/entitylinkage/model.py`, `src/entitylinkage/errors.py`, `src/entitylinkage/normalize.py`, and `tests/unit/test_model.py`, `tests/unit/test_normalize.py`; update `.gitignore` for Python bytecode caches.
 
 **Interfaces:** Implement the shared model types above, `EntityLinkageError`, `ConfigError`, and `normalize_text(value: str, config: NormalizationConfig) -> str`. Normalization order is NFKC, configured Unicode punctuation handling, optional Unicode case folding, then whitespace collapse and trim.
 
-- [ ] **Step 1: Write tests** asserting `normalize_text("  Ａlpha—B  ", NormalizationConfig(case_fold=True, punctuation="space")) == "alpha b"`; assert `case_fold=False` preserves case; assert punctuation modes produce `"a,b"`, `"ab"`, and `"a b"` for `"A,B"`; assert frozen model values reject field reassignment and copied attributes cannot be mutated through the original input mapping.
-- [ ] **Step 2: Run `uv run --locked pytest tests/unit/test_model.py tests/unit/test_normalize.py -q`; the normalization imports/tests must fail before implementation.**
-- [ ] **Step 3: Implement the dataclasses, read-only mapping copies, domain exceptions, and `normalize_text` in the named files.**
-- [ ] **Step 4: Run `uv run --locked pytest tests/unit/test_model.py tests/unit/test_normalize.py -q`; all normalization and immutability assertions must pass.**
-- [ ] **Step 5: Run `uv run --locked ruff check src/entitylinkage tests/unit` and commit as `feat: add linkage models and normalization`.**
+- [x] **Step 1: Write tests** asserting `normalize_text("  Ａlpha—B  ", NormalizationConfig(case_fold=True, punctuation="space")) == "alpha b"`; assert `case_fold=False` preserves case; assert punctuation modes produce `"a,b"`, `"ab"`, and `"a b"` for `"A,B"`; assert frozen model values reject field reassignment and copied attributes cannot be mutated through the original input mapping.
+- [x] **Step 2: Run `uv run --locked pytest tests/unit/test_model.py tests/unit/test_normalize.py -q`; the normalization imports/tests must fail before implementation.**
+- [x] **Step 3: Implement the dataclasses, read-only mapping copies, domain exceptions, and `normalize_text` in the named files; ignore `__pycache__/` and `*.py[cod]`.**
+- [x] **Step 4: Run `uv run --locked pytest tests/unit/test_model.py tests/unit/test_normalize.py -q`; all normalization and immutability assertions must pass.**
+- [x] **Step 5: Run `uv run --locked ruff check src/entitylinkage tests/unit` and commit as `feat: add linkage models and normalization`.**
 
 ### Task 3: Implement conservative matching and evidence
 
