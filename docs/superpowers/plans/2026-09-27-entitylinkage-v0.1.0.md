@@ -116,12 +116,12 @@ Use frozen dataclasses and copy incoming mappings into read-only mappings. Defin
 
 **Interfaces:** Implement `audit_results(results: Sequence[LinkageResult]) -> AuditSummary`, `serialize_linkage_json(results) -> str`, `serialize_summary_json(results) -> str`, `serialize_linkage_csv(results) -> str`, `inspection_payload(record: Record, result: LinkageResult) -> dict[str, object]`, and `write_artifacts(results, output_dir: Path) -> None`. JSON and CSV must use the fixed schemas/columns in the design, sorted keys/IDs, canonical JSON for structured CSV cells, UTF-8, LF newlines, tool and Unicode database versions, and no timestamps or paths.
 
-- [ ] **Step 1: Write tests** for all four status counts, sorted recurring reason counts, stable JSON bytes, stable CSV bytes, alias-order-independent output, metadata version fields, no timestamps/paths, and the fixed CSV header `record_id,status,entity_id,candidate_entity_ids,reason_codes,evidence`.
-- [ ] **Step 2: Add `test_csv_round_trip_preserves_structured_evidence`**; serialize evidence containing a comma, quote, and newline, parse with `csv.DictReader`, then assert the parsed evidence JSON equals the original structure and output line endings are LF.
-- [ ] **Step 3: Run `uv run --locked pytest tests/unit/test_audit.py tests/unit/test_output.py -q`; tests must fail before these helpers exist.**
-- [ ] **Step 4: Implement the audit model, stable serializers, inspection payload, and artifact writer.**
-- [ ] **Step 5: Run `uv run --locked pytest tests/unit/test_audit.py tests/unit/test_output.py -q` and `uv run --locked ruff check src/entitylinkage tests/unit`; all assertions must pass.**
-- [ ] **Step 6: Commit as `feat: add deterministic linkage reports`.**
+- [x] **Step 1: Write tests** for all four status counts, sorted recurring reason counts, stable JSON bytes, stable CSV bytes, alias-order-independent output, metadata version fields, no timestamps/paths, and the fixed CSV header `record_id,status,entity_id,candidate_entity_ids,reason_codes,evidence`.
+- [x] **Step 2: Add `test_csv_round_trip_preserves_structured_evidence`**; serialize evidence containing a comma, quote, and newline, parse with `csv.DictReader`, then assert the parsed evidence JSON equals the original structure and output line endings are LF.
+- [x] **Step 3: Run `uv run --locked pytest tests/unit/test_audit.py tests/unit/test_output.py -q`; tests must fail before these helpers exist.**
+- [x] **Step 4: Implement the audit model, stable serializers, inspection payload, and artifact writer.**
+- [x] **Step 5: Run `uv run --locked pytest tests/unit/test_audit.py tests/unit/test_output.py -q` and `uv run --locked ruff check src/entitylinkage tests/unit`; all assertions must pass.**
+- [x] **Step 6: Commit as `feat: add deterministic linkage reports`.**
 
 ### Task 6: Add the noninteractive CLI
 
