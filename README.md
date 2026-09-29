@@ -87,11 +87,13 @@ entitylinkage inspect RECORD_ID PATH
 
 JSON uses stable key ordering and compact encoding. CSV has the fixed columns `record_id,status,entity_id,candidate_entity_ids,reason_codes,evidence`; structured cells contain canonical JSON and rows end with LF. Reports include the EntityLinkage version and Unicode database version, contain no timestamps or filesystem paths, and are byte-identical for equivalent inputs under the same runtime versions. `inspect` shows the input record, normalized record name, rule evidence, candidate IDs, reasons, and final decision.
 
+Downstream adapters can consume the versioned `linkage.json` contract (`entitylinkage-results-v1`) without calling the Python API. It preserves resolved, ambiguous, unresolved, and not-applicable decisions with their reasons and evidence. Expected-source coverage is a separate concern: missing or ambiguous links alone do not establish a coverage gap.
+
 ## Scope and limitations
 
 EntityLinkage performs deterministic exact matching; it does not infer dates, apply domain-specific substitutions, score similarity, or guarantee that declared data is true. Review the evidence and source provenance before using a manual override. Unicode normalization behavior can vary with the runtime's Unicode database version, which is recorded in report metadata.
 
-EntityLinkage can produce mapping evidence for tools such as EvidenceMatrix, which analyzes entity-by-source evidence coverage. It does not require or replace EvidenceMatrix. It also does not provide LineageGuard's artifact provenance and chain-of-custody functions.
+EntityLinkage can produce mapping evidence for tools such as [EvidenceMatrix](https://github.com/KageRyo/EvidenceMatrix), which analyzes entity-by-source evidence coverage. It does not require or replace EvidenceMatrix. It also does not provide LineageGuard's artifact provenance and chain-of-custody functions.
 
 The public TWDisaster files currently include event-source relationships and observations already connected to events. Those mappings are not independent labels for validating a source-to-event resolver, so this project does not claim a TWDisaster dogfood result or copy TWDisaster data. See the [read-only review](docs/dogfood/twdisaster.md).
 
