@@ -104,3 +104,7 @@ uv run --locked pytest
 uv run --locked ruff check .
 uv run --locked ruff format --check .
 ```
+
+## Maintenance
+
+See [maintenance conventions](docs/maintenance.md) for dependency updates, required CI, Action pinning and release validation.
