@@ -52,7 +52,7 @@ jobs:
           wheel="${wheels[0]}"
           venv="$RUNNER_TEMP/entitylinkage-wheel"
           uv venv --python "${{ matrix.python-version }}" "$venv"
-          uv pip install --python "$venv/bin/python" "$GITHUB_WORKSPACE/$wheel"
+          uv pip install --no-build --python "$venv/bin/python" "$GITHUB_WORKSPACE/$wheel"
           cd "$RUNNER_TEMP"
           app="$venv/bin/entitylinkage"
           "$venv/bin/python" -c 'import entitylinkage, pathlib; location = pathlib.Path(entitylinkage.__file__).resolve(); assert "site-packages" in location.parts, location'
