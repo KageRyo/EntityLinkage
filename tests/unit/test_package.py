@@ -4,5 +4,4 @@ import entitylinkage
 
 
 def test_package_version_matches_distribution_metadata() -> None:
-    assert entitylinkage.__version__ == "0.1.1"
-    assert version("entitylinkage") == "0.1.1"
+    assert entitylinkage.__version__ == version("entitylinkage")
