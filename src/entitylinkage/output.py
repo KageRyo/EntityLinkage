@@ -6,6 +6,7 @@ import json
 import unicodedata
 from collections.abc import Sequence
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 from typing import Any
 
 from entitylinkage import __version__
@@ -86,9 +87,22 @@ def inspection_payload(record: Record, result: LinkageResult) -> dict[str, objec
 
 def write_artifacts(results: Sequence[LinkageResult], output_dir: Path) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
-    (output_dir / "linkage.json").write_bytes(serialize_linkage_json(results).encode("utf-8"))
-    (output_dir / "linkage.csv").write_bytes(serialize_linkage_csv(results).encode("utf-8"))
-    (output_dir / "summary.json").write_bytes(serialize_summary_json(results).encode("utf-8"))
+    artifacts = {
+        "linkage.json": serialize_linkage_json(results).encode("utf-8"),
+        "linkage.csv": serialize_linkage_csv(results).encode("utf-8"),
+        "summary.json": serialize_summary_json(results).encode("utf-8"),
+    }
+    for name, content in artifacts.items():
+        temporary = None
+        try:
+            # Exclusive temporary creation avoids following planted report links.
+            with NamedTemporaryFile(dir=output_dir, prefix=f".{name}.", delete=False) as stream:
+                temporary = Path(stream.name)
+                stream.write(content)
+            temporary.replace(output_dir / name)
+        finally:
+            if temporary is not None:
+                temporary.unlink(missing_ok=True)
 
 
 def _result_objects(results: Sequence[LinkageResult]) -> list[dict[str, object]]:
