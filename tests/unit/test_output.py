@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import io
 import json
+import os
 import unicodedata
 from pathlib import Path
 
@@ -165,3 +166,24 @@ def test_write_artifacts_creates_three_deterministic_files(tmp_path: Path) -> No
     assert (tmp_path / "reports" / "summary.json").read_text(
         encoding="utf-8"
     ) == serialize_summary_json(results)
+
+
+@pytest.mark.parametrize("link_kind", ["symlink", "hardlink"])
+def test_report_output_does_not_overwrite_link_target(tmp_path, link_kind):
+    outside = tmp_path / "outside.json"
+    outside.write_text("keep outside data", encoding="utf-8")
+    output = tmp_path / "reports"
+    output.mkdir()
+    report = output / "linkage.json"
+    if link_kind == "symlink":
+        report.symlink_to(outside)
+    else:
+        os.link(outside, report)
+
+    write_artifacts((_result(),), output)
+
+    assert outside.read_text(encoding="utf-8") == "keep outside data"
+    assert (
+        json.loads(report.read_text(encoding="utf-8"))["schema_version"]
+        == "entitylinkage-results-v1"
+    )
