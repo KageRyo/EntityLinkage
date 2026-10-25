@@ -4,6 +4,7 @@ import csv
 import io
 import json
 import os
+import stat
 import unicodedata
 from pathlib import Path
 
@@ -187,3 +188,29 @@ def test_report_output_does_not_overwrite_link_target(tmp_path, link_kind):
         json.loads(report.read_text(encoding="utf-8"))["schema_version"]
         == "entitylinkage-results-v1"
     )
+
+
+@pytest.mark.skipif(os.name != "posix", reason="POSIX permission bits")
+def test_new_reports_use_ordinary_file_permissions(tmp_path):
+    reference = tmp_path / "ordinary"
+    reference.write_bytes(b"reference")
+
+    write_artifacts((_result(),), tmp_path / "reports")
+
+    expected = stat.S_IMODE(reference.stat().st_mode)
+    for name in ("linkage.json", "linkage.csv", "summary.json"):
+        assert stat.S_IMODE((tmp_path / "reports" / name).stat().st_mode) == expected
+
+
+@pytest.mark.skipif(os.name != "posix", reason="POSIX permission bits")
+@pytest.mark.parametrize("mode", [0o640, 0o2640])
+def test_replacing_regular_report_preserves_rwx_without_special_bits(tmp_path, mode):
+    output = tmp_path / "reports"
+    output.mkdir()
+    report = output / "linkage.json"
+    report.write_bytes(b"old report")
+    report.chmod(mode)
+
+    write_artifacts((_result(),), output)
+
+    assert stat.S_IMODE(report.stat().st_mode) == 0o640

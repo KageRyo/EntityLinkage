@@ -3,10 +3,11 @@ from __future__ import annotations
 import csv
 import io
 import json
+import stat
 import unicodedata
 from collections.abc import Sequence
 from pathlib import Path
-from tempfile import NamedTemporaryFile
+from tempfile import TemporaryDirectory
 from typing import Any
 
 from entitylinkage import __version__
@@ -93,16 +94,20 @@ def write_artifacts(results: Sequence[LinkageResult], output_dir: Path) -> None:
         "summary.json": serialize_summary_json(results).encode("utf-8"),
     }
     for name, content in artifacts.items():
-        temporary = None
-        try:
-            # Exclusive temporary creation avoids following planted report links.
-            with NamedTemporaryFile(dir=output_dir, prefix=f".{name}.", delete=False) as stream:
-                temporary = Path(stream.name)
+        destination = output_dir / name
+        # A private directory protects exclusive creation while honoring the process umask.
+        with TemporaryDirectory(dir=output_dir, prefix=f".{name}.") as workspace:
+            temporary = Path(workspace) / name
+            with temporary.open("xb") as stream:
                 stream.write(content)
-            temporary.replace(output_dir / name)
-        finally:
-            if temporary is not None:
-                temporary.unlink(missing_ok=True)
+            try:
+                previous_mode = destination.lstat().st_mode
+            except FileNotFoundError:
+                pass
+            else:
+                if stat.S_ISREG(previous_mode):
+                    temporary.chmod(previous_mode & 0o777)
+            temporary.replace(destination)
 
 
 def _result_objects(results: Sequence[LinkageResult]) -> list[dict[str, object]]:
