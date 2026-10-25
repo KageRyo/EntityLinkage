@@ -3,9 +3,11 @@ from __future__ import annotations
 import csv
 import io
 import json
+import stat
 import unicodedata
 from collections.abc import Sequence
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import Any
 
 from entitylinkage import __version__
@@ -86,9 +88,26 @@ def inspection_payload(record: Record, result: LinkageResult) -> dict[str, objec
 
 def write_artifacts(results: Sequence[LinkageResult], output_dir: Path) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
-    (output_dir / "linkage.json").write_bytes(serialize_linkage_json(results).encode("utf-8"))
-    (output_dir / "linkage.csv").write_bytes(serialize_linkage_csv(results).encode("utf-8"))
-    (output_dir / "summary.json").write_bytes(serialize_summary_json(results).encode("utf-8"))
+    artifacts = {
+        "linkage.json": serialize_linkage_json(results).encode("utf-8"),
+        "linkage.csv": serialize_linkage_csv(results).encode("utf-8"),
+        "summary.json": serialize_summary_json(results).encode("utf-8"),
+    }
+    for name, content in artifacts.items():
+        destination = output_dir / name
+        # A private directory protects exclusive creation while honoring the process umask.
+        with TemporaryDirectory(dir=output_dir, prefix=f".{name}.") as workspace:
+            temporary = Path(workspace) / name
+            with temporary.open("xb") as stream:
+                stream.write(content)
+            try:
+                previous_mode = destination.lstat().st_mode
+            except FileNotFoundError:
+                pass
+            else:
+                if stat.S_ISREG(previous_mode):
+                    temporary.chmod(previous_mode & 0o777)
+            temporary.replace(destination)
 
 
 def _result_objects(results: Sequence[LinkageResult]) -> list[dict[str, object]]:
