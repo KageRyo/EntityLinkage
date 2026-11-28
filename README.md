@@ -2,7 +2,7 @@
 
 EntityLinkage is a small Python library and command-line tool for linking external records to a canonical set of entities. It makes conservative, explainable decisions from configured identity rules and preserves ambiguity and missing data for review.
 
-> EntityLinkage was extracted from conservative identity-matching patterns developed for a real-world multi-source data pipeline.
+> EntityLinkage grew out of identity-matching rules used in a multi-source data pipeline.
 
 ## Decisions stay conservative
 
@@ -11,7 +11,7 @@ EntityLinkage is a small Python library and command-line tool for linking extern
 - **`unresolved`** — no candidate remains. Reason codes distinguish missing identity information from usable values that matched nothing and from constraints that rejected candidates.
 - **`not_applicable`** — the record is explicitly outside the configured entity scope.
 
-Every result includes candidate IDs, stable reason codes, and evidence for candidate rules, constraints, and any reviewed override. A declared alias is evidence supplied by the configuration; the tool does not invent aliases or use fuzzy matching, external services, or machine learning.
+EntityLinkage matches records locally, using only the configured identity rules and the aliases declared in the configuration. Every result includes candidate IDs, stable reason codes, and evidence for candidate rules, constraints, and any reviewed override.
 
 ## Install and try the examples
 
